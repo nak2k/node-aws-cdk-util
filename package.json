@@ -1,0 +1,37 @@
+{
+  "name": "aws-cdk-util",
+  "version": "0.1.0",
+  "description": "Utility for AWS CDK",
+  "author": "Kengo Nakatsuka <kengo.nakatsuka@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/nak2k/node-aws-cdk-util/issues"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-logs": "^1.13.1",
+    "@aws-cdk/core": "^1.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^12.11.1",
+    "typescript": "^3.6.4"
+  },
+  "homepage": "https://github.com/nak2k/node-aws-cdk-util",
+  "keywords": [
+    "aws",
+    "cdk"
+  ],
+  "license": "MIT",
+  "main": "lib",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nak2k/node-aws-cdk-util.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "README.md",
+    "lib/"
+  ]
+}
