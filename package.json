@@ -7,11 +7,12 @@
     "url": "https://github.com/nak2k/node-aws-cdk-util/issues"
   },
   "dependencies": {
-    "@aws-cdk/aws-logs": "^1.13.1",
-    "@aws-cdk/core": "^1.13.1"
+    "@aws-cdk/aws-logs": "^1.14.0",
+    "@aws-cdk/core": "^1.14.0",
+    "aws-cdk": "^1.14.0"
   },
   "devDependencies": {
-    "@types/node": "^12.11.1",
+    "@types/node": "^12.11.6",
     "typescript": "^3.6.4"
   },
   "homepage": "https://github.com/nak2k/node-aws-cdk-util",
