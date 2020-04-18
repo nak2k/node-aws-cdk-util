@@ -26,6 +26,7 @@ export function grantSynth(identity: IGrantable & IConstruct) {
   identity.grantPrincipal.addToPolicy(new PolicyStatement({
     actions: [
       's3:*Object',
+      's3:GetBucketLocation',
       's3:ListBucket',
     ],
     resources: [
