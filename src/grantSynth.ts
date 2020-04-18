@@ -1,6 +1,6 @@
 import { PolicyStatement, IGrantable } from "@aws-cdk/aws-iam";
 import { Stack, IConstruct } from "@aws-cdk/core";
-import { DEFAULT_TOOLKIT_STACK_NAME } from "aws-cdk/lib/api/deployment-target";
+import { DEFAULT_TOOLKIT_STACK_NAME } from "aws-cdk";
 
 /**
  * Grant permissions for executing `cdk synth`.
