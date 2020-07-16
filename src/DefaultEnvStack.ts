@@ -1,6 +1,6 @@
 import { Stack, Construct, StackProps } from '@aws-cdk/core';
 
-export class BaseAppStack extends Stack {
+export class DefaultEnvStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, {
       ...props,
