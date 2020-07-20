@@ -1,4 +1,4 @@
-import { BaseDataSource, BaseResolverProps } from '@aws-cdk/aws-appsync';
+import type { BaseDataSource, BaseResolverProps } from '@aws-cdk/aws-appsync';
 
 export interface FieldProps extends Omit<Omit<BaseResolverProps, 'typeName'>, 'fieldName'> {
   dataSource: BaseDataSource,
