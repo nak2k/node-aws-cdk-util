@@ -9,7 +9,7 @@ export function grantStack(identity: IGrantable, stack: Stack) {
   }));
 }
 
-export function grantStackByName(identity: IGrantable, stackName: Stack) {
+export function grantStackByName(identity: IGrantable, stackName: string) {
   grantStackByArn(identity, `arn:${Aws.PARTITION}:cloudformation:${Aws.REGION}:${Aws.ACCOUNT_ID}:stack/${stackName}/*`);
 }
 
