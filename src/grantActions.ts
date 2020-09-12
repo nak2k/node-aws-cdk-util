@@ -8,7 +8,7 @@ import { PolicyStatement, IGrantable } from '@aws-cdk/aws-iam';
  * @param resources Resource ARNs.
  */
 export function grantActions(identity: IGrantable, actions: string[], resources = ['*']) {
-  identity.grantPrincipal.addToPolicy(new PolicyStatement({
+  identity.grantPrincipal.addToPrincipalPolicy(new PolicyStatement({
     actions,
     resources,
   }));

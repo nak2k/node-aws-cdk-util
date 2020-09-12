@@ -14,7 +14,7 @@ export function grantSynth(identity: IGrantable & IConstruct) {
     resourceName: `${DEFAULT_TOOLKIT_STACK_NAME}/*`,
   });
 
-  identity.grantPrincipal.addToPolicy(new PolicyStatement({
+  identity.grantPrincipal.addToPrincipalPolicy(new PolicyStatement({
     actions: [
       'cloudformation:DescribeStack*',
     ],
@@ -23,7 +23,7 @@ export function grantSynth(identity: IGrantable & IConstruct) {
     ],
   }));
 
-  identity.grantPrincipal.addToPolicy(new PolicyStatement({
+  identity.grantPrincipal.addToPrincipalPolicy(new PolicyStatement({
     actions: [
       's3:*Object',
       's3:GetBucketLocation',

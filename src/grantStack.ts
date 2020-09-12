@@ -2,7 +2,7 @@ import { PolicyStatement, IGrantable } from '@aws-cdk/aws-iam';
 import { Stack } from '@aws-cdk/core';
 
 export function grantStack(identity: IGrantable, stack: Stack) {
-  identity.grantPrincipal.addToPolicy(new PolicyStatement({
+  identity.grantPrincipal.addToPrincipalPolicy(new PolicyStatement({
     actions: [
       'cloudformation:DescribeStack*',
       'cloudformation:CreateStack',
