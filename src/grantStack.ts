@@ -1,7 +1,19 @@
 import { PolicyStatement, IGrantable } from '@aws-cdk/aws-iam';
-import { Stack } from '@aws-cdk/core';
+import { Aws, Stack } from '@aws-cdk/core';
 
 export function grantStack(identity: IGrantable, stack: Stack) {
+  grantStackByArn(identity, stack.formatArn({
+    service: 'cloudformation',
+    resource: 'stack',
+    resourceName: `${stack.stackName}/*`,
+  }));
+}
+
+export function grantStackByName(identity: IGrantable, stackName: Stack) {
+  grantStackByArn(identity, `arn:${Aws.PARTITION}:cloudformation:${Aws.REGION}:${Aws.ACCOUNT_ID}:stack/${stackName}/*`);
+}
+
+export function grantStackByArn(identity: IGrantable, stackArn: string) {
   identity.grantPrincipal.addToPrincipalPolicy(new PolicyStatement({
     actions: [
       'cloudformation:DescribeStack*',
@@ -21,11 +33,8 @@ export function grantStack(identity: IGrantable, stack: Stack) {
       'cloudformation:SetStackPolicy',
     ],
     resources: [
-      stack.formatArn({
-        service: 'cloudformation',
-        resource: 'stack',
-        resourceName: `${stack.stackName}/*`,
-      }),
+      stackArn,
     ],
   }));
 }
+
