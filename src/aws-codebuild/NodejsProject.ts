@@ -2,38 +2,40 @@ import { readFileSync } from 'fs';
 import { URL } from 'url';
 import {
   ProjectProps, Project, GitHubSourceProps, Source, FilterGroup, EventAction, LinuxBuildImage
-} from '@aws-cdk/aws-codebuild';
-import { Construct } from '@aws-cdk/core';
+} from 'aws-cdk-lib/aws-codebuild';
+import { Construct } from 'constructs';
 
 export interface NodejsProjectProps extends ProjectProps {
-
+  /**
+   * Whether to enable the webhook.
+   * 
+   * @default true
+   */
+  webhook?: boolean;
 }
 
 export class NodejsProject extends Project {
   constructor(scope: Construct, id: string, props: NodejsProjectProps = {}) {
     const gitHubSourceProps = NodejsProject.getGitHubSourcePropsFromPackageJson();
-    let {
+    const { webhook = true } = props;
+    const {
       projectName,
-      source,
       environment,
-    } = props;
-
-    if (!source) {
       source = Source.gitHub({
         ...gitHubSourceProps,
-        webhook: true,
-        webhookFilters: [
+        webhook,
+        webhookFilters: webhook ? [
           FilterGroup.inEventOf(EventAction.PUSH).andBranchIs('master'),
-        ],
-      });
-    }
+        ] : undefined,
+      }),
+    } = props;
 
     super(scope, id, {
       ...props,
       projectName: projectName || gitHubSourceProps.repo,
       source,
       environment: environment || {
-        buildImage: LinuxBuildImage.AMAZON_LINUX_2,
+        buildImage: LinuxBuildImage.AMAZON_LINUX_2_3,
       },
     });
   }

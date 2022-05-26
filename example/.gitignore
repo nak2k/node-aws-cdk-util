@@ -1,0 +1,11 @@
+/node_modules/
+/*.tgz
+/tmp/
+/.cache/
+build/
+
+/cdk.out
+/src/*.js
+/src/*.d.ts
+
+/layer/nodejs/node_modules/

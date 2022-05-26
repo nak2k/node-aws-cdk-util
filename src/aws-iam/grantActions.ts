@@ -1,4 +1,4 @@
-import { PolicyStatement, IGrantable } from '@aws-cdk/aws-iam';
+import { PolicyStatement, IGrantable } from 'aws-cdk-lib/aws-iam';
 
 /**
  * Grant permissions for actions.

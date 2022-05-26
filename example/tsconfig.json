@@ -5,7 +5,6 @@
     "lib": [
       "es2020"
     ],
-    "outDir": "lib/",
     "declaration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -16,7 +15,8 @@
     "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": false,
-    "inlineSourceMap": false,
+    "inlineSourceMap": true,
+    "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": [
@@ -24,8 +24,6 @@
     ]
   },
   "exclude": [
-    "example",
-    "lib",
-    "node_modules"
+    "cdk.out"
   ]
 }
