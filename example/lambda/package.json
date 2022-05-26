@@ -1,0 +1,9 @@
+{
+  "name": "nodejslayer-example-lambda",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "debug": "^4.3.1",
+    "tarball": "file:../tarball/tarball-0.1.0.tgz"
+  }
+}

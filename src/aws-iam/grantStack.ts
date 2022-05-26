@@ -1,5 +1,5 @@
-import { PolicyStatement, IGrantable } from '@aws-cdk/aws-iam';
-import { Aws, Stack } from '@aws-cdk/core';
+import { PolicyStatement, IGrantable } from 'aws-cdk-lib/aws-iam';
+import { Aws, Stack } from 'aws-cdk-lib';
 
 export function grantStack(identity: IGrantable, stack: Stack) {
   grantStacks(identity, stack);
