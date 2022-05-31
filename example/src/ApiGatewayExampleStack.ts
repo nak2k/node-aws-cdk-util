@@ -33,6 +33,7 @@ export class ApiGatewayExampleStack extends DefaultEnvStack {
       restApiName: "ApiGatewayExample",
       endpointTypes: [EndpointType.REGIONAL],
       binaryMediaTypes: ["image/*"],
+      cloudWatchRole: false,
     });
 
     const mockIntegration = new MockIntegration({
