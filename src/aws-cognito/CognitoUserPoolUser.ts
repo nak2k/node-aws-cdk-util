@@ -119,7 +119,7 @@ export class CognitoUserPoolUser extends Construct {
     const provider = stack.node.tryFindChild(providerId) as Function
       ?? new Function(stack, providerId, {
         code: Code.fromAsset(join(__dirname, 'cognitouserpooluser-handler')),
-        runtime: Runtime.NODEJS_14_X,
+        runtime: Runtime.NODEJS_16_X,
         handler: "index.handler",
         initialPolicy: [
           new PolicyStatement({

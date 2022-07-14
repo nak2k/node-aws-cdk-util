@@ -29,7 +29,7 @@ export class EventsToSlack extends Construct {
     const handler = new Function(this, "handler", {
       code: Code.fromAsset(`${__dirname}/handler`),
       handler: "index.handler",
-      runtime: Runtime.NODEJS_14_X,
+      runtime: Runtime.NODEJS_16_X,
       environment: {
         SLACK_WEBHOOK_URL: props.webhookUrl,
         SLACK_CHANNEL: props.channel ?? "",
