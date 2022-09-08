@@ -1,4 +1,5 @@
 import { StringParameter, StringParameterProps } from 'aws-cdk-lib/aws-ssm';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Stack, StackProps, CfnOutput, CfnOutputProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
@@ -13,6 +14,11 @@ export class DefaultEnvStack extends Stack {
     });
   }
 
+  /**
+   * Batch create CfnOutput.
+   * 
+   * @param outputs 
+   */
   createOutputs(outputs: {
     [id: string]: CfnOutputProps;
   }) {
@@ -21,6 +27,11 @@ export class DefaultEnvStack extends Stack {
     }
   }
 
+  /**
+   * Batch create StringParameter.
+   * 
+   * @param parameters 
+   */
   createStringParameters(parameters: {
     [id: string]: StringParameterProps;
   }) {
@@ -29,7 +40,34 @@ export class DefaultEnvStack extends Stack {
     }
   }
 
+  /**
+   * Shorthand of StringParameter.valueFromLookup().
+   * 
+   * @param parameterName 
+   * @returns 
+   */
   valueFromLookup(parameterName: string) {
     return StringParameter.valueFromLookup(this, parameterName);
+  }
+
+  /**
+   * Shorthand of StringParameter.valueForStringParameter().
+   * 
+   * @param parameterName 
+   * @returns 
+   */
+  valueFromStringParameter(parameterName: string) {
+    return StringParameter.valueForStringParameter(this, parameterName);
+  }
+
+  /**
+   * Create a Bucket construct that has the name specified by SSM Parameter.
+   * 
+   * @param id 
+   * @param parameterName 
+   * @returns 
+   */
+  s3BucketFromStringParameter(id: string, parameterName: string) {
+    return Bucket.fromBucketName(this, id, this.valueFromStringParameter(parameterName));
   }
 }
