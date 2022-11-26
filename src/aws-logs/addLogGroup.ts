@@ -9,9 +9,9 @@ export function addLogGroup(scope: IConstruct, logGroupProps?: LogGroupProps) {
     throw new Error(`The scope ${scope.node.path} has no resource`);
   }
 
-  return new LogGroup(resource, "LogGroup", {
-    ...logGroupProps,
+  return new LogGroup(scope, "LogGroup", {
     logGroupName: Fn.join('', [getLogGroupPrefix(resource), resource.ref]),
+    ...logGroupProps,
   });
 }
 
