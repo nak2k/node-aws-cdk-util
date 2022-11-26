@@ -1,7 +1,14 @@
 import { CfnResource, Fn } from "aws-cdk-lib";
 import { LogGroup, LogGroupProps } from "aws-cdk-lib/aws-logs";
+import { IConstruct } from "constructs";
 
-export function addLogGroup(resource: CfnResource, logGroupProps?: LogGroupProps) {
+export function addLogGroup(scope: IConstruct, logGroupProps?: LogGroupProps) {
+  const resource = scope.node.defaultChild;
+
+  if (!(resource instanceof CfnResource)) {
+    throw new Error(`The scope ${scope.node.path} has no resource`);
+  }
+
   return new LogGroup(resource, "LogGroup", {
     ...logGroupProps,
     logGroupName: Fn.join('', [getLogGroupPrefix(resource), resource.ref]),
