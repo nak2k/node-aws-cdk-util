@@ -208,7 +208,7 @@ export class RestApiBuilder {
       "integration.request.header.Range": "method.request.header.Range",
     };
 
-    const pathParameters = path.match(/(?<=\{)[^}]+(?=\})/g) || [];
+    const pathParameters: string[] = path.match(/(?<=\{)[^}]+(?=\})/g) || [];
     pathParameters.forEach(name =>
       requestParameters[`integration.request.path.${name}`] = `method.request.path.${name}`
     );
@@ -323,7 +323,7 @@ export class RestApiBuilder {
       "integration.request.header.Expires": "method.request.header.Expires",
     };
 
-    const pathParameters = path.match(/(?<=\{)[^}]+(?=\})/g) || [];
+    const pathParameters: string[] = path.match(/(?<=\{)[^}]+(?=\})/g) || [];
     pathParameters.forEach(name =>
       requestParameters[`integration.request.path.${name}`] = `method.request.path.${name}`
     );
