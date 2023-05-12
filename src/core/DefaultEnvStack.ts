@@ -1,7 +1,8 @@
 import { StringParameter, StringParameterProps } from 'aws-cdk-lib/aws-ssm';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { Stack, StackProps, CfnOutput, CfnOutputProps } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, CfnOutputProps, IResource } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
+import { stringParameterNameForProp } from "../aws-ssm/stringParameterNameForProp";
 
 export class DefaultEnvStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
@@ -69,6 +70,10 @@ export class DefaultEnvStack extends Stack {
    */
   valueForStringParameter(parameterName: string) {
     return StringParameter.valueForStringParameter(this, parameterName);
+  }
+
+  valueForStringParameterOfProp<T extends IResource>(resource: T, propName: keyof T) {
+    return StringParameter.valueForStringParameter(this, stringParameterNameForProp(resource, propName));
   }
 
   /**

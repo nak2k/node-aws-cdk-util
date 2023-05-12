@@ -12,5 +12,7 @@ export { NodejsFunction, NodejsFunctionProps } from './aws-lambda/NodejsFunction
 export { NodejsLayerVersion, NodejsLayerVersionProps } from './aws-lambda/NodejsLayerVersion';
 export { addLogGroup } from "./aws-logs/addLogGroup";
 export { PreparedLogGroup, PreparedLogGroupApplyProps } from './aws-logs/PreparedLogGroup';
+export { addStringParameterForProp } from './aws-ssm/addStringParameterForProp';
+export { stringParameterNameForProp } from './aws-ssm/stringParameterNameForProp';
 export { DefaultEnvStack } from "./core/DefaultEnvStack";
 export { FnEx } from "./core/FnEx";
