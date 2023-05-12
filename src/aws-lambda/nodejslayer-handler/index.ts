@@ -5,7 +5,8 @@ import type {
   CloudFormationCustomResourceEvent,
   CloudFormationCustomResourceResponse,
 } from 'aws-lambda';
-import { CodeBuild, Lambda, AWSError } from 'aws-sdk';
+import { BatchGetBuildsCommand, CodeBuildClient, StartBuildCommand } from '@aws-sdk/client-codebuild';
+import { DeleteLayerVersionCommand, LambdaClient, ResourceNotFoundException } from '@aws-sdk/client-lambda';
 import { request } from 'https';
 import { URL } from 'url';
 
@@ -112,15 +113,15 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
   const props = ResourceProperties as NodejsLayerVersionProperties;
 
   if (PhysicalResourceId !== CREATE_FAILED_MARKER && props.DeleteLayer) {
-    const lambda = new Lambda();
+    const lambdaClient = new LambdaClient({});
 
     const [, , , , , , LayerName, VersionNumber] = PhysicalResourceId.split(':');
 
-    await lambda.deleteLayerVersion({
+    await lambdaClient.send(new DeleteLayerVersionCommand({
       LayerName,
       VersionNumber: parseInt(VersionNumber, 10),
-    }).promise().catch((err: AWSError) => {
-      if (err.code !== "ResourceNotFoundException") {
+    })).catch((err) => {
+      if (!(err instanceof ResourceNotFoundException)) {
         throw err;
       }
     });
@@ -173,9 +174,9 @@ async function startBuildLayer(layerName: string, event: CloudFormationCustomRes
 
   const props = ResourceProperties as NodejsLayerVersionProperties;
 
-  const codebuild = new CodeBuild();
+  const codebuildClient = new CodeBuildClient({});
 
-  const startBuildData = await codebuild.startBuild({
+  const startBuildData = await codebuildClient.send(new StartBuildCommand({
     projectName: BUILDER_NAME,
     buildspecOverride: `
 version: 0.2
@@ -209,7 +210,7 @@ phases:
       - >
         curl -sS -X PUT -H 'content-type: application/json' -d "$(cat response.json)" '${event.ResponseURL}'
 `,
-  }).promise();
+  }));
 
   const buildId = startBuildData.build?.id;
 
@@ -218,9 +219,9 @@ phases:
   }
 
   for (; ;) {
-    const { builds } = await codebuild.batchGetBuilds({
+    const { builds } = await codebuildClient.send(new BatchGetBuildsCommand({
       ids: [buildId],
-    }).promise();
+    }));
 
     if (!builds) {
       throw new Error(`batchGetBuilds failed`);

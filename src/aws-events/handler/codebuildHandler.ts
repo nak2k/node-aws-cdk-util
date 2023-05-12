@@ -1,6 +1,6 @@
 import { postSlackMessage, SlackMessage } from './postSlackMessage';
 import { COLOR_MAP } from './constants';
-import { CloudWatchLogs } from 'aws-sdk';
+import { CloudWatchLogsClient, GetLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 import { CodeBuildCloudWatchStateEvent } from 'aws-lambda';
 
 export async function codebuildHandler(event: CodeBuildCloudWatchStateEvent, _context: any) {
@@ -61,7 +61,7 @@ export async function codebuildHandler(event: CodeBuildCloudWatchStateEvent, _co
   /*
    * Add an error information to the message.
    */
-  const logs = new CloudWatchLogs();
+  const logsClient = new CloudWatchLogsClient({});
 
   const params = {
     logGroupName,
@@ -69,7 +69,7 @@ export async function codebuildHandler(event: CodeBuildCloudWatchStateEvent, _co
     limit: 100,
   };
 
-  const data = await logs.getLogEvents(params).promise();
+  const data = await logsClient.send(new GetLogEventsCommand(params));
 
   if (!data.events) {
     return;

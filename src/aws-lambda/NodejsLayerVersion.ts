@@ -96,7 +96,7 @@ export class NodejsLayerVersion extends Construct {
     const provider = stack.node.tryFindChild(providerId) as Function
       ?? new Function(stack, providerId, {
         code: Code.fromAsset(join(__dirname, 'nodejslayer-handler')),
-        runtime: Runtime.NODEJS_16_X,
+        runtime: Runtime.NODEJS_18_X,
         handler: "index.handler",
         environment: {
           BUILDER_NAME: builder.projectName,

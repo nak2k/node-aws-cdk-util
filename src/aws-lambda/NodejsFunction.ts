@@ -54,7 +54,7 @@ export class NodejsFunction extends FunctionBase {
 
     this.handler = new Function(this, 'Function', {
       code: code || NodejsFunction.getCode(packageDirectory),
-      runtime: runtime || Runtime.NODEJS_16_X,
+      runtime: runtime || Runtime.NODEJS_18_X,
       handler: handler || 'index.handler',
       layers: layers ? [...layers, this.layerVersion] : [this.layerVersion],
       ...restProps

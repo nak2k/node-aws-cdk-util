@@ -1,6 +1,8 @@
-import { CognitoIdentityServiceProvider, SSM, SecretsManager } from 'aws-sdk';
+import { AdminCreateUserCommand, AdminDeleteUserCommand, AdminSetUserPasswordCommand, CognitoIdentityProviderClient, UserNotFoundException } from '@aws-sdk/client-cognito-identity-provider';
+import { PutParameterCommand, SSMClient } from '@aws-sdk/client-ssm';
+import { GetRandomPasswordCommand, GetSecretValueCommand, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
 
-const cognito = new CognitoIdentityServiceProvider();
+const cognitoClient = new CognitoIdentityProviderClient({});
 
 export async function cognitoCreateUser(options: {
   UserPoolId: string;
@@ -11,10 +13,10 @@ export async function cognitoCreateUser(options: {
 }) {
   const { UserPoolId, Username } = options;
 
-  await cognito.adminCreateUser({
+  await cognitoClient.send(new AdminCreateUserCommand({
     UserPoolId,
     Username,
-  }).promise();
+  }));
 
   await cognitoSetUserPassword(options).catch(err =>
     cognitoDeleteUser({
@@ -44,12 +46,12 @@ export async function cognitoSetUserPassword(options: {
 
   const { UserPoolId, Username } = options;
 
-  await cognito.adminSetUserPassword({
+  await cognitoClient.send(new AdminSetUserPasswordCommand({
     UserPoolId,
     Username,
     Password,
     Permanent: true,
-  }).promise();
+  }));
 }
 
 /**
@@ -76,24 +78,24 @@ async function getPassword(options: {
   if (SecretId) {
     return (await getSecret(SecretId)).password;
   } else if (PasswordParameterName) {
-    const secretsmanager = new SecretsManager();
+    const secretsmanagerClient = new SecretsManagerClient({});
 
-    const data = await secretsmanager.getRandomPassword({
+    const data = await secretsmanagerClient.send(new GetRandomPasswordCommand({
       ExcludeCharacters: "+-=",
       PasswordLength,
-    }).promise();
+    }));
 
     const { RandomPassword } = data;
     if (!RandomPassword) {
       throw new Error(`secretsmanager.getRandomPassword() returns empty password`);
     }
 
-    const ssm = new SSM();
-    await ssm.putParameter({
+    const ssmClient = new SSMClient({});
+    await ssmClient.send(new PutParameterCommand({
       Name: PasswordParameterName,
       Value: RandomPassword,
       Overwrite: true,
-    }).promise();
+    }));
 
     return RandomPassword;
   } else {
@@ -108,11 +110,11 @@ async function getPassword(options: {
  * @returns 
  */
 async function getSecret(secretId: string): Promise<{ password: string }> {
-  const secretsmanager = new SecretsManager();
+  const secretsmanagerClient = new SecretsManagerClient({});
 
-  const secretValue = await secretsmanager.getSecretValue({
+  const secretValue = await secretsmanagerClient.send(new GetSecretValueCommand({
     SecretId: secretId,
-  }).promise();
+  }));
 
   const { SecretString } = secretValue;
   if (!SecretString) {
@@ -139,10 +141,10 @@ export async function cognitoDeleteUser(options: {
   Username: string;
 }) {
   try {
-    await cognito.adminDeleteUser(options).promise();
+    await cognitoClient.send(new AdminDeleteUserCommand(options));
   } catch (err: any) {
     // Ignore UserNotFoundException
-    if (err.code === "UserNotFoundException") {
+    if (err instanceof UserNotFoundException) {
       return;
     }
 
