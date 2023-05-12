@@ -3,7 +3,7 @@ import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import { ParameterType, StringParameter } from 'aws-cdk-lib/aws-ssm';
+import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from "constructs";
 import { join } from 'path';
 
@@ -89,7 +89,6 @@ export class CognitoUserPoolUser extends Construct {
       this.passwordParameter = new StringParameter(this, "passwordParameter", {
         parameterName: props.passwordParameterName,
         stringValue: "--place-holder--",
-        type: ParameterType.STRING,
       });
     }
 
