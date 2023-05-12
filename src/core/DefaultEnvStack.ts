@@ -55,8 +55,19 @@ export class DefaultEnvStack extends Stack {
    * 
    * @param parameterName 
    * @returns 
+   * @deprecated Use valueForStringParameter() instead.
    */
   valueFromStringParameter(parameterName: string) {
+    return StringParameter.valueForStringParameter(this, parameterName);
+  }
+
+  /**
+   * Shorthand of StringParameter.valueForStringParameter().
+   * 
+   * @param parameterName 
+   * @returns 
+   */
+  valueForStringParameter(parameterName: string) {
     return StringParameter.valueForStringParameter(this, parameterName);
   }
 
@@ -68,6 +79,6 @@ export class DefaultEnvStack extends Stack {
    * @returns 
    */
   s3BucketFromStringParameter(id: string, parameterName: string) {
-    return Bucket.fromBucketName(this, id, this.valueFromStringParameter(parameterName));
+    return Bucket.fromBucketName(this, id, this.valueForStringParameter(parameterName));
   }
 }
