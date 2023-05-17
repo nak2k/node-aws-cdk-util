@@ -32,10 +32,18 @@ export interface SystemdServiceOptions {
   restartSec?: string;
 }
 
+/**
+ * A configuration to define a service with Systemd.
+ */
 export class SystemdService {
   constructor(private options: SystemdServiceOptions) {
   }
 
+  /**
+   * Call InitFile.fromString() to generate a Systemd unit file for this configuration.
+   *
+   * @returns InitFile instance.
+   */
   file() {
     const { options } = this;
 
@@ -61,7 +69,24 @@ export class SystemdService {
     return InitFile.fromString(`/etc/systemd/system/${options.serviceName}.service`, lines.filter(line => line !== undefined).join('\n'));
   }
 
+  /**
+   * Call InitService.enable() with a service name of this configuration.
+   * 
+   * @returns InitService instance.
+   */
   enable() {
     return InitService.enable(this.options.serviceName);
+  }
+
+  /**
+   * Call file() and enable().
+   * 
+   * @returns [initFile, initService]
+   */
+  initElements() {
+    return [
+      this.file(),
+      this.enable(),
+    ];
   }
 }
