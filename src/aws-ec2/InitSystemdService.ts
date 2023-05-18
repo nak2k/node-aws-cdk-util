@@ -1,6 +1,6 @@
 import { InitFile, InitService } from "aws-cdk-lib/aws-ec2";
 
-export interface SystemdServiceOptions {
+export interface InitSystemdServiceOptions {
   serviceName: string;
 
   description?: string;
@@ -35,8 +35,8 @@ export interface SystemdServiceOptions {
 /**
  * A configuration to define a service with Systemd.
  */
-export class SystemdService {
-  constructor(private options: SystemdServiceOptions) {
+export class InitSystemdService {
+  constructor(private options: InitSystemdServiceOptions) {
   }
 
   /**

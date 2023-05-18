@@ -4,7 +4,7 @@ export { RestApiBuilder } from "./aws-apigateway/RestApiBuilder";
 export { TextMockIntegration, TextMockIntegrationOptions } from "./aws-apigateway/TextMockIntegration";
 export { NodejsProject, NodejsProjectProps } from './aws-codebuild/NodejsProject';
 export { CognitoUserPoolUser, CognitoUserPoolUserProps } from "./aws-cognito/CognitoUserPoolUser";
-export { SystemdService, SystemdServiceOptions } from "./aws-ec2/SystemdService";
+export { InitSystemdService, InitSystemdServiceOptions } from "./aws-ec2/InitSystemdService";
 export { EventsToSlack, EventsToSlackProps } from "./aws-events/EventsToSlack";
 export { grantActions } from './aws-iam/grantActions';
 export { grantForSSMManagedInstance } from './aws-iam/grantForSSMManagedInstance';
@@ -17,3 +17,5 @@ export { addStringParameterForProp } from './aws-ssm/addStringParameterForProp';
 export { stringParameterNameForProp } from './aws-ssm/stringParameterNameForProp';
 export { DefaultEnvStack } from "./core/DefaultEnvStack";
 export { FnEx } from "./core/FnEx";
+
+export { InitSystemdService as SystemdService, InitSystemdServiceOptions as SystemdServiceOptions } from "./aws-ec2/InitSystemdService";
