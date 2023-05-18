@@ -5,6 +5,7 @@ export { TextMockIntegration, TextMockIntegrationOptions } from "./aws-apigatewa
 export { NodejsProject, NodejsProjectProps } from './aws-codebuild/NodejsProject';
 export { CognitoUserPoolUser, CognitoUserPoolUserProps } from "./aws-cognito/CognitoUserPoolUser";
 export { InitCloudWatchAgent, InitCloudWatchAgentOptions } from "./aws-ec2/InitCloudWatchAgent";
+export { InitDocker, InitDockerOptions } from "./aws-ec2/InitDocker";
 export { InitSystemdService, InitSystemdServiceOptions } from "./aws-ec2/InitSystemdService";
 export { EventsToSlack, EventsToSlackProps } from "./aws-events/EventsToSlack";
 export { grantActions } from './aws-iam/grantActions';
