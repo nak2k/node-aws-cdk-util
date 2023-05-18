@@ -4,6 +4,7 @@ export { RestApiBuilder } from "./aws-apigateway/RestApiBuilder";
 export { TextMockIntegration, TextMockIntegrationOptions } from "./aws-apigateway/TextMockIntegration";
 export { NodejsProject, NodejsProjectProps } from './aws-codebuild/NodejsProject';
 export { CognitoUserPoolUser, CognitoUserPoolUserProps } from "./aws-cognito/CognitoUserPoolUser";
+export { InitCloudWatchAgent, InitCloudWatchAgentOptions } from "./aws-ec2/InitCloudWatchAgent";
 export { InitSystemdService, InitSystemdServiceOptions } from "./aws-ec2/InitSystemdService";
 export { EventsToSlack, EventsToSlackProps } from "./aws-events/EventsToSlack";
 export { grantActions } from './aws-iam/grantActions';
