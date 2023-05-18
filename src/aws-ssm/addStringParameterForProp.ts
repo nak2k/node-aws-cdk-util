@@ -8,3 +8,7 @@ export function addStringParameterForProp<T extends IResource>(resource: T, prop
     stringValue: String(resource[propName]),
   });
 }
+
+export function addStringParametersForProps<T extends IResource>(resource: T, ...propNames: ReadonlyArray<keyof T>) {
+  return propNames.map(propName => addStringParameterForProp(resource, propName));
+}
