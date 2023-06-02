@@ -3,8 +3,11 @@ import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Stack, StackProps, CfnOutput, CfnOutputProps, IResource } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { stringParameterNameForProp } from "../aws-ssm/stringParameterNameForProp";
+import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
 
 export class DefaultEnvStack extends Stack {
+  private _defaultVpc: IVpc;
+
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, {
       ...props,
@@ -85,5 +88,19 @@ export class DefaultEnvStack extends Stack {
    */
   s3BucketFromStringParameter(id: string, parameterName: string) {
     return Bucket.fromBucketName(this, id, this.valueForStringParameter(parameterName));
+  }
+
+  /**
+   * Import the default VPC by calling Vpc.fromLookUp().
+   * 
+   * @param id 
+   * @returns 
+   */
+  defaultVpc(id: string = "Vpc") {
+    if (!this._defaultVpc) {
+      this._defaultVpc = Vpc.fromLookup(this, id, { isDefault: true });
+    }
+
+    return this._defaultVpc;
   }
 }
