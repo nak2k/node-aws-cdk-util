@@ -55,6 +55,7 @@ export class InitSystemdService {
       ``,
       `[Service]`,
       options.type && `Type=${options.type}`,
+      `EnvironmentFile=-/etc/sysconfig/${options.serviceName}`,
       ...Array.prototype.concat(options.execStartPre ?? []).map(s => `ExecStartPre=${s}`),
       ...Array.prototype.concat(options.execStart ?? []).map(s => `ExecStart=${s}`),
       ...Array.prototype.concat(options.execStartPost ?? []).map(s => `ExecStartPost=${s}`),
