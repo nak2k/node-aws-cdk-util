@@ -35,7 +35,7 @@ export class NodejsProject extends Project {
       projectName: projectName || gitHubSourceProps.repo,
       source,
       environment: environment || {
-        buildImage: LinuxBuildImage.AMAZON_LINUX_2_3,
+        buildImage: LinuxBuildImage.STANDARD_7_0,
       },
     });
   }
