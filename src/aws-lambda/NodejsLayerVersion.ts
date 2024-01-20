@@ -96,7 +96,7 @@ export class NodejsLayerVersion extends Construct {
     const provider = stack.node.tryFindChild(providerId) as Function
       ?? new Function(stack, providerId, {
         code: Code.fromAsset(join(__dirname, 'nodejslayer-handler')),
-        runtime: Runtime.NODEJS_18_X,
+        runtime: Runtime.NODEJS_20_X,
         handler: "index.handler",
         environment: {
           BUILDER_NAME: builder.projectName,
@@ -131,7 +131,7 @@ export class NodejsLayerVersion extends Construct {
 
     const builder = new Project(stack, builderId, {
       environment: {
-        buildImage: LinuxBuildImage.STANDARD_6_0,
+        buildImage: LinuxBuildImage.STANDARD_7_0,
       },
       buildSpec: BuildSpec.fromObject({
         version: '0.2',
