@@ -13,6 +13,7 @@ export { grantForSSMManagedInstance } from './aws-iam/grantForSSMManagedInstance
 export { grantStack, grantStackByArn, grantStackByName, grantStacks } from './aws-iam/grantStack';
 export { NodejsFunction, NodejsFunctionProps } from './aws-lambda/NodejsFunction';
 export { NodejsLayerVersion, NodejsLayerVersionProps } from './aws-lambda/NodejsLayerVersion';
+export { LambdaWebAdapter, LambdaWebAdapterAttributes } from "./aws-lambda/LambdaWebAdapter";
 export { addLogGroup } from "./aws-logs/addLogGroup";
 export { PreparedLogGroup, PreparedLogGroupApplyProps } from './aws-logs/PreparedLogGroup';
 export { addStringParameterForProp, addStringParametersForProps } from './aws-ssm/addStringParameterForProp';
