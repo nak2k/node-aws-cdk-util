@@ -21,5 +21,6 @@ export { addStringParameterForProp, addStringParametersForProps } from './aws-ss
 export { stringParameterNameForProp } from './aws-ssm/stringParameterNameForProp';
 export { DefaultEnvStack } from "./core/DefaultEnvStack";
 export { FnEx } from "./core/FnEx";
+export { KeyPair, KeyPairProps } from "./core/KeyPair";
 
 export { InitSystemdService as SystemdService, InitSystemdServiceOptions as SystemdServiceOptions } from "./aws-ec2/InitSystemdService";
