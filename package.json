@@ -1,6 +1,6 @@
 {
   "name": "aws-cdk-util",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "description": "Utility for AWS CDK",
   "author": "Kengo Nakatsuka <kengo.nakatsuka@gmail.com>",
   "bugs": {
