@@ -5,8 +5,8 @@ import type {
   CloudFormationCustomResourceEvent,
   CloudFormationCustomResourceResponse,
 } from 'aws-lambda';
-import { DeleteParametersCommand, GetParameterCommand, PutParameterCommand, ResourceNotFoundException, SSMClient } from '@aws-sdk/client-ssm';
-import { CloudFrontClient, CreatePublicKeyCommand, DeletePublicKeyCommand } from "@aws-sdk/client-cloudfront";
+import { GetParameterCommand, PutParameterCommand, ParameterNotFound, SSMClient, DeleteParameterCommand } from '@aws-sdk/client-ssm';
+import { CloudFrontClient, CreatePublicKeyCommand, DeletePublicKeyCommand, NoSuchPublicKey } from "@aws-sdk/client-cloudfront";
 import { request } from 'https';
 import { URL } from 'url';
 import { generateKeyPairSync } from "node:crypto";
@@ -188,12 +188,10 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
     }, event);
   }
 
-  await ssmClient.send(new DeleteParametersCommand({
-    Names: [
-      props.PrivateKey.SsmParameter,
-    ],
+  await ssmClient.send(new DeleteParameterCommand({
+    Name: props.PrivateKey.SsmParameter,
   })).catch((err) => {
-    if (!(err instanceof ResourceNotFoundException)) {
+    if (!(err instanceof ParameterNotFound)) {
       throw err;
     }
   });
@@ -201,7 +199,7 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
   await cloudfrontClient.send(new DeletePublicKeyCommand({
     Id: PhysicalResourceId,
   })).catch((err) => {
-    if (!(err instanceof ResourceNotFoundException)) {
+    if (!(err instanceof NoSuchPublicKey)) {
       throw err;
     }
   })
