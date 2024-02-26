@@ -2,6 +2,7 @@ export { JSONMockIntegration, JSONMockIntegrationOptions } from "./aws-apigatewa
 export { RedirectMockIntegration, RedirectMockIntegrationOptions } from "./aws-apigateway/RedirectMockIntegration";
 export { RestApiBuilder } from "./aws-apigateway/RestApiBuilder";
 export { TextMockIntegration, TextMockIntegrationOptions } from "./aws-apigateway/TextMockIntegration";
+export { CloudFrontKeyPair, CloudFrontKeyPairProps } from "./aws-cloudfront/CloudFrontKeyPair";
 export { NodejsProject, NodejsProjectProps } from './aws-codebuild/NodejsProject';
 export { CognitoUserPoolUser, CognitoUserPoolUserProps } from "./aws-cognito/CognitoUserPoolUser";
 export { InitCloudWatchAgent, InitCloudWatchAgentOptions } from "./aws-ec2/InitCloudWatchAgent";
