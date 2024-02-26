@@ -6,7 +6,7 @@ import type {
   CloudFormationCustomResourceResponse,
 } from 'aws-lambda';
 import { GetParameterCommand, PutParameterCommand, ParameterNotFound, SSMClient, DeleteParameterCommand } from '@aws-sdk/client-ssm';
-import { CloudFrontClient, CreatePublicKeyCommand, DeletePublicKeyCommand, NoSuchPublicKey } from "@aws-sdk/client-cloudfront";
+import { CloudFrontClient, CreatePublicKeyCommand, DeletePublicKeyCommand, GetPublicKeyCommand, NoSuchPublicKey } from "@aws-sdk/client-cloudfront";
 import { request } from 'https';
 import { URL } from 'url';
 import { generateKeyPairSync } from "node:crypto";
@@ -158,7 +158,7 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
     console.warn(`SSM parameter is not found: ${props.PrivateKey.SsmParameter}`);
   });
 
-  await cloudfrontClient.send(new DeletePublicKeyCommand({
+  const getPublicKeyOutput = await cloudfrontClient.send(new GetPublicKeyCommand({
     Id: PhysicalResourceId,
   })).catch((err) => {
     if (!(err instanceof NoSuchPublicKey)) {
@@ -166,7 +166,20 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
     }
 
     console.warn(`CloudFront public key is not found: ${PhysicalResourceId}`);
-  })
+  });
+
+  if (getPublicKeyOutput) {
+    await cloudfrontClient.send(new DeletePublicKeyCommand({
+      Id: PhysicalResourceId,
+      IfMatch: getPublicKeyOutput.ETag,
+    })).catch((err) => {
+      if (!(err instanceof NoSuchPublicKey)) {
+        throw err;
+      }
+
+      console.warn(`CloudFront public key is not found: ${PhysicalResourceId}`);
+    })
+  }
 
   return submitResponse({
     ...event,
