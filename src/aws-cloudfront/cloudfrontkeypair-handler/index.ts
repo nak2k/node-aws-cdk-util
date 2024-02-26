@@ -10,7 +10,6 @@ import { CloudFrontClient, CreatePublicKeyCommand, DeletePublicKeyCommand, NoSuc
 import { request } from 'https';
 import { URL } from 'url';
 import { generateKeyPairSync } from "node:crypto";
-import { createPublicKey } from "crypto";
 
 const CREATE_FAILED_MARKER = "CREATE_FAILED";
 
@@ -99,10 +98,7 @@ async function createHandler(event: CloudFormationCustomResourceCreateEvent): Pr
   return submitResponse({
     ...event,
     Status: 'SUCCESS',
-    PhysicalResourceId: props.PrivateKey.SsmParameter,
-    Data: {
-      PublicKeyId: publicKeyOutput.PublicKey.Id,
-    },
+    PhysicalResourceId: publicKeyOutput.PublicKey.Id,
   }, event);
 }
 
@@ -111,7 +107,6 @@ async function updateHandler(event: CloudFormationCustomResourceUpdateEvent): Pr
     PhysicalResourceId,
     ResourceProperties,
     OldResourceProperties,
-    LogicalResourceId,
   } = event;
 
   const props = ResourceProperties as CloudFrontKeyPairPropertiesWithServiceToken;
@@ -128,47 +123,12 @@ async function updateHandler(event: CloudFormationCustomResourceUpdateEvent): Pr
     }, event);
   }
 
-  const getParameterOutput = await ssmClient.send(new GetParameterCommand({
-    Name: oldProps.PrivateKey.SsmParameter,
-    WithDecryption: true,
-  }));
-
-  if (!getParameterOutput.Parameter?.Value) {
-    throw new Error(`Private key is not found in SSM parameter: ${oldProps.PrivateKey.SsmParameter}`);
-  }
-
-  const privateKey = getParameterOutput.Parameter.Value;
-
-  await ssmClient.send(new PutParameterCommand({
-    Name: props.PrivateKey.SsmParameter,
-    Value: privateKey,
-    Type: "SecureString",
-  }));
-
-  const publicKey = createPublicKey(privateKey).export({
-    type: 'spki',
-    format: 'pem',
-  }).toString();
-
-  const publicKeyOutput = await cloudfrontClient.send(new CreatePublicKeyCommand({
-    PublicKeyConfig: {
-      CallerReference: LogicalResourceId,
-      Name: LogicalResourceId,
-      EncodedKey: publicKey,
-    },
-  }));
-
-  if (!publicKeyOutput.PublicKey?.Id) {
-    throw new Error("PublicKey.Id is not returned from CloudFront API");
-  }
+  await renameParameter(oldProps.PrivateKey.SsmParameter, props.PrivateKey.SsmParameter);
 
   return submitResponse({
     ...event,
     Status: 'SUCCESS',
-    PhysicalResourceId: props.PrivateKey.SsmParameter,
-    Data: {
-      PublicKeyId: publicKeyOutput.PublicKey.Id,
-    },
+    PhysicalResourceId,
   }, event);
 }
 
@@ -194,6 +154,8 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
     if (!(err instanceof ParameterNotFound)) {
       throw err;
     }
+
+    console.warn(`SSM parameter is not found: ${props.PrivateKey.SsmParameter}`);
   });
 
   await cloudfrontClient.send(new DeletePublicKeyCommand({
@@ -202,6 +164,8 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
     if (!(err instanceof NoSuchPublicKey)) {
       throw err;
     }
+
+    console.warn(`CloudFront public key is not found: ${PhysicalResourceId}`);
   })
 
   return submitResponse({
@@ -243,4 +207,25 @@ async function submitResponse(response: CloudFormationCustomResourceResponse, ev
       .on('error', reject)
       .end(body);
   });
+}
+
+async function renameParameter(oldParameterName: string, newParameterName: string) {
+  const getParameterOutput = await ssmClient.send(new GetParameterCommand({
+    Name: oldParameterName,
+    WithDecryption: true,
+  }));
+
+  if (!getParameterOutput.Parameter?.Value) {
+    throw new Error(`Private key is not found in SSM parameter: ${oldParameterName}`);
+  }
+
+  await ssmClient.send(new PutParameterCommand({
+    Name: newParameterName,
+    Value: getParameterOutput.Parameter.Value,
+    Type: "SecureString",
+  }));
+
+  await ssmClient.send(new DeleteParameterCommand({
+    Name: oldParameterName,
+  }));
 }

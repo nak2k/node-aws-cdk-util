@@ -59,7 +59,7 @@ export class CloudFrontKeyPair extends Construct {
       } satisfies CloudFrontKeyPairProperties,
     });
 
-    this.publicKeyId = customResource.getAttString('PublicKeyId');
+    this.publicKeyId = customResource.ref;
     this.publicKey = PublicKey.fromPublicKeyId(this, 'PublicKey', this.publicKeyId);
     this.privateKeySsmParameter = SecretValue.ssmSecure(this.privateKeySsmParameterName);
   }
