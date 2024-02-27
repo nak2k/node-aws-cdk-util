@@ -1,4 +1,4 @@
-import { Arn, Fn } from "aws-cdk-lib";
+import { Stack } from "aws-cdk-lib";
 import { Architecture, LayerVersion, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import { arch } from "os";
@@ -40,7 +40,6 @@ export class LambdaWebAdapter {
    */
   static fromLWAAttributes(scope: Construct, id: string, attrs: LambdaWebAdapterAttributes) {
     const {
-      region = "${AWS::Region}",
       architecture = arch() === "arm64" ? Architecture.ARM_64 : Architecture.X86_64,
       runtime = Runtime.NODEJS_20_X,
     } = attrs;
@@ -62,14 +61,13 @@ export class LambdaWebAdapter {
       throw new Error(`Unsupported runtime ${runtime.name}`);
     }
 
-    const lwaLayerVersionArn = Arn.format({
-      service: "lambda",
-      region: region,
+    const lwaLayerVersionArn = Stack.of(scope).formatArn({
       account: "753240598075",
+      service: "lambda",
       resource: "layer",
       resourceName: `LambdaAdapterLayer${resourceNameArchitecture}:${resourceNameVersion}`,
     });
 
-    return LayerVersion.fromLayerVersionArn(scope, id, Fn.sub(lwaLayerVersionArn));
+    return LayerVersion.fromLayerVersionArn(scope, id, lwaLayerVersionArn);
   }
 }
