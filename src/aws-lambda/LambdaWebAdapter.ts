@@ -1,4 +1,4 @@
-import { Stack } from "aws-cdk-lib";
+import { ArnFormat, Stack } from "aws-cdk-lib";
 import { Architecture, LayerVersion, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import { arch } from "os";
@@ -66,6 +66,7 @@ export class LambdaWebAdapter {
       service: "lambda",
       resource: "layer",
       resourceName: `LambdaAdapterLayer${resourceNameArchitecture}:${resourceNameVersion}`,
+      arnFormat: ArnFormat.COLON_RESOURCE_NAME,
     });
 
     return LayerVersion.fromLayerVersionArn(scope, id, lwaLayerVersionArn);
