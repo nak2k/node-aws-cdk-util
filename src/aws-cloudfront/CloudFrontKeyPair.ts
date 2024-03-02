@@ -1,10 +1,11 @@
 import { CustomResource, Duration, SecretValue, Stack } from "aws-cdk-lib";
-import { PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { IGrantable, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from "constructs";
 import { CloudFrontKeyPairProperties } from "./cloudfrontkeypair-handler";
 import { IPublicKey, PublicKey } from "aws-cdk-lib/aws-cloudfront";
 import { join } from "path";
+import { SSMUtil } from "../aws-ssm/SSMUtil";
 
 export interface CloudFrontKeyPairProps {
   /**
@@ -29,7 +30,7 @@ export interface CloudFrontKeyPairProps {
 export class CloudFrontKeyPair extends Construct {
   public static readonly resourceType = 'Custom::CloudFrontKeyPair';
 
-  privateKeySsmParameter: SecretValue;
+  privateKeySecretValue: SecretValue;
   privateKeySsmParameterName: string;
   publicKey: IPublicKey;
   publicKeyId: string;
@@ -61,7 +62,11 @@ export class CloudFrontKeyPair extends Construct {
 
     this.publicKeyId = customResource.ref;
     this.publicKey = PublicKey.fromPublicKeyId(this, 'PublicKey', this.publicKeyId);
-    this.privateKeySsmParameter = SecretValue.ssmSecure(this.privateKeySsmParameterName);
+    this.privateKeySecretValue = SecretValue.ssmSecure(this.privateKeySsmParameterName);
+  }
+
+  grantReadPrivateKey(grantee: IGrantable) {
+    SSMUtil.grantReadStringParameter(grantee, this, this.privateKeySsmParameterName);
   }
 
   private createProvider(scope: Construct) {
