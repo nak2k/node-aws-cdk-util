@@ -1,5 +1,5 @@
-import { CustomResource, Duration, Stack } from "aws-cdk-lib";
-import { IGrantable, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { CustomResource, Duration, SecretValue, Stack } from "aws-cdk-lib";
+import { PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from "constructs";
 import { KeyPairProperties } from "./keypair-handler";
@@ -26,7 +26,7 @@ export interface KeyPairProps {
 export class KeyPair extends Construct {
   public static readonly resourceType = 'Custom::KeyPair';
 
-  privateKeySsmParameter: IStringParameter;
+  privateKeySsmParameter: SecretValue;
   publicKeySsmParameter: IStringParameter;
   privateKeySsmParameterName: string;
   publicKeySsmParameterName: string;
@@ -62,16 +62,8 @@ export class KeyPair extends Construct {
       } satisfies KeyPairProperties,
     });
 
-    this.privateKeySsmParameter = StringParameter.fromStringParameterName(this, 'PrivateKeySsmParameter', this.privateKeySsmParameterName);
+    this.privateKeySsmParameter = SecretValue.ssmSecure(this.privateKeySsmParameterName);
     this.publicKeySsmParameter = StringParameter.fromStringParameterName(this, 'PublicKeySsmParameter', this.publicKeySsmParameterName);
-  }
-
-  grantReadPrivateKey(grantee: IGrantable) {
-    this.privateKeySsmParameter.grantRead(grantee);
-  }
-
-  grantReadPublicKey(grantee: IGrantable) {
-    this.publicKeySsmParameter.grantRead(grantee);
   }
 
   private createProvider(scope: Construct) {
