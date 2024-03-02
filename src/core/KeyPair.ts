@@ -44,8 +44,8 @@ export class KeyPair extends Construct {
 
     const stack = Stack.of(scope);
 
-    this.privateKeySsmParameterName = privateKey.ssmParameter ?? `/${stack.stackName}/private-key`;
-    this.publicKeySsmParameterName = publicKey.ssmParameter ?? `/${stack.stackName}/public-key`;
+    this.privateKeySsmParameterName = privateKey.ssmParameter ?? `/${stack.stackName}/${id}/private-key`;
+    this.publicKeySsmParameterName = publicKey.ssmParameter ?? `/${stack.stackName}/${id}/public-key`;
 
     new CustomResource(this, 'CustomResource', {
       resourceType: KeyPair.resourceType,

@@ -34,7 +34,7 @@ export class CloudFrontKeyPair extends Construct {
   publicKey: IPublicKey;
   publicKeyId: string;
 
-  constructor(scope: Construct, id: string, props: CloudFrontKeyPairProps) {
+  constructor(scope: Construct, id: string, props: CloudFrontKeyPairProps = {}) {
     super(scope, id);
 
     const { privateKey = {}, providerOnly } = props;
@@ -47,7 +47,7 @@ export class CloudFrontKeyPair extends Construct {
 
     const stack = Stack.of(scope);
 
-    this.privateKeySsmParameterName = privateKey.ssmParameter ?? `/${stack.stackName}/private-key`;
+    this.privateKeySsmParameterName = privateKey.ssmParameter ?? `/${stack.stackName}/${id}/private-key`;
 
     const customResource = new CustomResource(this, 'CustomResource', {
       resourceType: CloudFrontKeyPair.resourceType,
