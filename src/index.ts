@@ -18,6 +18,7 @@ export { LambdaWebAdapter, LambdaWebAdapterAttributes } from "./aws-lambda/Lambd
 export { addLogGroup } from "./aws-logs/addLogGroup";
 export { PreparedLogGroup, PreparedLogGroupApplyProps } from './aws-logs/PreparedLogGroup';
 export { addStringParameterForProp, addStringParametersForProps } from './aws-ssm/addStringParameterForProp';
+export { SSMUtil } from "./aws-ssm/SSMUtil";
 export { stringParameterNameForProp } from './aws-ssm/stringParameterNameForProp';
 export { DefaultEnvStack } from "./core/DefaultEnvStack";
 export { FnEx } from "./core/FnEx";
