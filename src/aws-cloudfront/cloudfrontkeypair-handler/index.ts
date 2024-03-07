@@ -88,7 +88,7 @@ async function createHandler(event: CloudFormationCustomResourceCreateEvent): Pr
 
   const publicKeyOutput = await cloudfrontClient.send(new CreatePublicKeyCommand({
     PublicKeyConfig: {
-      CallerReference: LogicalResourceId,
+      CallerReference: props.PublicKey.Name,
       Name: props.PublicKey.Name,
       EncodedKey: keyPair.publicKey,
     },
