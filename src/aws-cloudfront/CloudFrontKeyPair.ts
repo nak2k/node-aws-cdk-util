@@ -1,4 +1,4 @@
-import { CustomResource, Duration, SecretValue, Stack } from "aws-cdk-lib";
+import { Aws, CustomResource, Duration, Names, SecretValue, Stack } from "aws-cdk-lib";
 import { IGrantable, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from "constructs";
@@ -6,8 +6,19 @@ import { CloudFrontKeyPairProperties } from "./cloudfrontkeypair-handler";
 import { IPublicKey, PublicKey } from "aws-cdk-lib/aws-cloudfront";
 import { join } from "path";
 import { SSMUtil } from "../aws-ssm/SSMUtil";
+import { FnEx } from "../core/FnEx";
 
 export interface CloudFrontKeyPairProps {
+  /**
+   * The public key configuration.
+   */
+  publicKey?: {
+    /**
+     * The name of the CloudFront public key.
+     */
+    name?: string;
+  };
+
   /**
    * The private key configuration.
    */
@@ -54,6 +65,9 @@ export class CloudFrontKeyPair extends Construct {
       resourceType: CloudFrontKeyPair.resourceType,
       serviceToken,
       properties: {
+        PublicKey: {
+          Name: props.publicKey?.name ?? FnEx.concat`${Names.uniqueId(this)}-${Aws.REGION}`,
+        },
         PrivateKey: {
           SsmParameter: this.privateKeySsmParameterName,
         },

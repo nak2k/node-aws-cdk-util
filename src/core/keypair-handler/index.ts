@@ -137,10 +137,8 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
 
   const props = ResourceProperties as KeyPairPropertiesWithServiceToken;
 
-  if (PhysicalResourceId !== CREATE_FAILED_MARKER) {
-    await deleteParameter(props.PrivateKey.SsmParameter);
-    await deleteParameter(props.PublicKey.SsmParameter);
-  }
+  await deleteParameter(props.PrivateKey.SsmParameter);
+  await deleteParameter(props.PublicKey.SsmParameter);
 
   return submitResponse({
     ...event,

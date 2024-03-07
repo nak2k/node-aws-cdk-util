@@ -17,6 +17,9 @@ const ssmClient = new SSMClient({});
 const cloudfrontClient = new CloudFrontClient({});
 
 export interface CloudFrontKeyPairProperties {
+  PublicKey: {
+    Name: string;
+  };
   PrivateKey: {
     SsmParameter: string;
   };
@@ -86,7 +89,7 @@ async function createHandler(event: CloudFormationCustomResourceCreateEvent): Pr
   const publicKeyOutput = await cloudfrontClient.send(new CreatePublicKeyCommand({
     PublicKeyConfig: {
       CallerReference: LogicalResourceId,
-      Name: LogicalResourceId,
+      Name: props.PublicKey.Name,
       EncodedKey: keyPair.publicKey,
     },
   }));
@@ -139,14 +142,6 @@ async function deleteHandler(event: CloudFormationCustomResourceDeleteEvent): Pr
   } = event;
 
   const props = ResourceProperties as CloudFrontKeyPairPropertiesWithServiceToken;
-
-  if (PhysicalResourceId === CREATE_FAILED_MARKER) {
-    return submitResponse({
-      ...event,
-      Status: 'SUCCESS',
-      Reason: `Do nothing because the resource creation has been failed`,
-    }, event);
-  }
 
   await ssmClient.send(new DeleteParameterCommand({
     Name: props.PrivateKey.SsmParameter,
