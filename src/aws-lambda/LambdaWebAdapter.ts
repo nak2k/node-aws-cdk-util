@@ -1,5 +1,5 @@
 import { ArnFormat, Stack } from "aws-cdk-lib";
-import { Architecture, LayerVersion, Runtime } from "aws-cdk-lib/aws-lambda";
+import { Architecture, Function, LayerVersion, Runtime } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import { arch } from "os";
 
@@ -37,6 +37,7 @@ export class LambdaWebAdapter {
    * @param id 
    * @param attrs 
    * @returns 
+   * @deprecated Use `addToFunction` instead.
    */
   static fromLWAAttributes(scope: Construct, id: string, attrs: LambdaWebAdapterAttributes) {
     const {
@@ -70,5 +71,24 @@ export class LambdaWebAdapter {
     });
 
     return LayerVersion.fromLayerVersionArn(scope, id, lwaLayerVersionArn);
+  }
+
+  /**
+   * Adds the Lambda Web Adapter layer to the specified Lambda function.
+   * 
+   * @param handler 
+   */
+  static addToFunction(handler: Function) {
+    const architecture = handler.architecture === Architecture.ARM_64 ? "Arm64" : "X86";
+
+    const lwaLayerVersionArn = Stack.of(handler).formatArn({
+      account: "753240598075",
+      service: "lambda",
+      resource: "layer",
+      resourceName: `LambdaAdapterLayer${architecture}:24`,
+      arnFormat: ArnFormat.COLON_RESOURCE_NAME,
+    });
+
+    handler.addLayers(LayerVersion.fromLayerVersionArn(handler, "LambdaWebAdapter", lwaLayerVersionArn));
   }
 }
