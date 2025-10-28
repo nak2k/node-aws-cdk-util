@@ -1,6 +1,6 @@
 import { StringParameter, StringParameterProps } from 'aws-cdk-lib/aws-ssm';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { Stack, StackProps, CfnOutput, CfnOutputProps, IResource } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, CfnOutputProps, IResource, CfnResource } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { stringParameterNameForProp } from "../aws-ssm/stringParameterNameForProp";
 import { IVpc, Vpc } from "aws-cdk-lib/aws-ec2";
@@ -19,9 +19,9 @@ export class DefaultEnvStack extends Stack {
   }
 
   /**
-   * Batch create CfnOutput.
-   * 
-   * @param outputs 
+   * Batch create CfnOutput resources.
+   *
+   * @param outputs Map of output IDs to their props
    */
   createOutputs(outputs: {
     [id: string]: CfnOutputProps;
@@ -32,9 +32,9 @@ export class DefaultEnvStack extends Stack {
   }
 
   /**
-   * Batch create StringParameter.
-   * 
-   * @param parameters 
+   * Batch create StringParameter resources.
+   *
+   * @param parameters Map of parameter IDs to their props
    */
   createStringParameters(parameters: {
     [id: string]: StringParameterProps;
@@ -45,20 +45,20 @@ export class DefaultEnvStack extends Stack {
   }
 
   /**
-   * Shorthand of StringParameter.valueFromLookup().
-   * 
-   * @param parameterName 
-   * @returns 
+   * Shorthand for StringParameter.valueFromLookup().
+   *
+   * @param parameterName SSM parameter name
+   * @returns Parameter value
    */
   valueFromLookup(parameterName: string) {
     return StringParameter.valueFromLookup(this, parameterName);
   }
 
   /**
-   * Shorthand of StringParameter.valueForStringParameter().
-   * 
-   * @param parameterName 
-   * @returns 
+   * Shorthand for StringParameter.valueForStringParameter().
+   *
+   * @param parameterName SSM parameter name
+   * @returns Parameter value token
    * @deprecated Use valueForStringParameter() instead.
    */
   valueFromStringParameter(parameterName: string) {
@@ -66,35 +66,54 @@ export class DefaultEnvStack extends Stack {
   }
 
   /**
-   * Shorthand of StringParameter.valueForStringParameter().
-   * 
-   * @param parameterName 
-   * @returns 
+   * Shorthand for StringParameter.valueForStringParameter().
+   *
+   * @param parameterName SSM parameter name
+   * @returns Parameter value token
    */
   valueForStringParameter(parameterName: string) {
     return StringParameter.valueForStringParameter(this, parameterName);
   }
 
-  valueForStringParameterOfProp<T extends IResource>(resource: T, propName: keyof T) {
+  /**
+   * Get the value token of a StringParameter for a resource property.
+   *
+   * @param resource Target resource
+   * @param propName Property name of the resource
+   * @returns Parameter value token
+   */
+  valueForStringParameterOfProp<T extends IResource | CfnResource>(resource: T, propName: keyof T) {
     return StringParameter.valueForStringParameter(this, stringParameterNameForProp(resource, propName));
   }
 
   /**
-   * Create a Bucket construct that has the name specified by SSM Parameter.
-   * 
-   * @param id 
-   * @param parameterName 
-   * @returns 
+   * Get a StringParameter reference for a resource property.
+   *
+   * @param id Construct ID
+   * @param resource Target resource
+   * @param propName Property name of the resource
+   * @returns StringParameter construct
+   */
+  stringParameterForResource<T extends IResource | CfnResource>(id: string, resource: T, propName: keyof T) {
+    return StringParameter.fromStringParameterName(this, id, stringParameterNameForProp(resource, propName));
+  }
+
+  /**
+   * Create a Bucket construct with the name specified by an SSM Parameter.
+   *
+   * @param id Construct ID
+   * @param parameterName SSM parameter name containing the bucket name
+   * @returns S3 Bucket construct
    */
   s3BucketFromStringParameter(id: string, parameterName: string) {
     return Bucket.fromBucketName(this, id, this.valueForStringParameter(parameterName));
   }
 
   /**
-   * Import the default VPC by calling Vpc.fromLookUp().
-   * 
-   * @param id 
-   * @returns 
+   * Import the default VPC by calling Vpc.fromLookup().
+   *
+   * @param id Construct ID (defaults to "Vpc")
+   * @returns VPC construct
    */
   defaultVpc(id: string = "Vpc") {
     if (!this._defaultVpc) {
