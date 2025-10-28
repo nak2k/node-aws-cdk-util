@@ -113,7 +113,7 @@ async function updateHandler(event: CloudFormationCustomResourceUpdateEvent): Pr
   } = event;
 
   const props = ResourceProperties as CloudFrontKeyPairPropertiesWithServiceToken;
-  const oldProps = OldResourceProperties as CloudFrontKeyPairProperties;
+  const oldProps = OldResourceProperties as unknown as CloudFrontKeyPairProperties;
 
   validateProperties(props);
 

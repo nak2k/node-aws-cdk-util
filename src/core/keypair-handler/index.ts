@@ -87,7 +87,7 @@ async function updateHandler(event: CloudFormationCustomResourceUpdateEvent): Pr
   } = event;
 
   const props = ResourceProperties as KeyPairPropertiesWithServiceToken;
-  const oldProps = OldResourceProperties as KeyPairProperties;
+  const oldProps = OldResourceProperties as unknown as KeyPairProperties;
 
   validateProperties(props);
 
