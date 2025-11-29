@@ -1,5 +1,5 @@
 import type { IPrincipal, IRole } from 'aws-cdk-lib/aws-iam';
-import { Architecture, Code, Function, FunctionBase, FunctionProps, Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Architecture, Code, Function, FunctionBase, FunctionProps, Runtime, TenancyConfig } from 'aws-cdk-lib/aws-lambda';
 import { Construct, Node } from 'constructs';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -29,6 +29,11 @@ export class NodejsFunction extends FunctionBase {
   readonly role?: IRole;
   readonly permissionsNode: Node;
   readonly architecture: Architecture;
+
+  get tenancyConfig(): TenancyConfig | undefined {
+    return this.handler.tenancyConfig;
+  }
+
   protected readonly canCreatePermissions: boolean;
   readonly resourceArnsForGrantInvoke: string[];
 
