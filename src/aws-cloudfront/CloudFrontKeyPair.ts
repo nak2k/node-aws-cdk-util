@@ -90,7 +90,7 @@ export class CloudFrontKeyPair extends Construct {
     const provider = stack.node.tryFindChild(providerId) as Function
       ?? new Function(stack, providerId, {
         code: Code.fromAsset(join(__dirname, 'cloudfrontkeypair-handler')),
-        runtime: Runtime.NODEJS_20_X,
+        runtime: Runtime.NODEJS_24_X,
         handler: "index.handler",
         initialPolicy: [
           new PolicyStatement({
