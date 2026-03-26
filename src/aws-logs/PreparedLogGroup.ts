@@ -1,7 +1,7 @@
 import {
   Aspects, CfnResource, Fn, RemovalPolicy
 } from "aws-cdk-lib";
-import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { CfnLogGroup, LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct, IConstruct } from "constructs";
 
 export interface PreparedLogGroupApplyProps {
@@ -39,12 +39,23 @@ export class PreparedLogGroup {
           throw new Error('Parent construct not found');
         }
 
+        if (PreparedLogGroup.hasLogGroup(scope)) {
+          return;
+        }
+
         new LogGroup(scope, `${construct.node.id}LogGroup`, {
           logGroupName: Fn.join('', [logGroupPrefix, construct.ref]),
           ...props,
         });
       }
     });
+  }
+
+  private static hasLogGroup(scope: IConstruct): boolean {
+    return scope.node.children.some(child =>
+      child instanceof CfnLogGroup ||
+      child.node.children.some(c => c instanceof CfnLogGroup)
+    );
   }
 
   private static findParentConstruct(construct: IConstruct): Construct | undefined {
